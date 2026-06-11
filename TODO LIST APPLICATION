@@ -1,0 +1,144 @@
+#APPLICATION
+#INDEX.HTML
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TODO List</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="todo-container">
+    <h2>My TODO List</h2>
+    <input type="text" id="taskInput" placeholder="Enter a task">
+    <button id="addBtn">Add</button>
+    <ul id="taskList"></ul>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
+--------------------------------------------------------------------------
+#STYLE.CSS
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f4f9;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.todo-container {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  width: 300px;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+input[type="text"] {
+  width: 80%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+button {
+  padding: 8px 12px;
+  margin-left: 5px;
+  background: #28a745;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #218838;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin-top: 20px;
+}
+
+li {
+  background: #f8f9fa;
+  padding: 10px;
+  margin-bottom: 8px;
+  border-radius: 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.delete-btn {
+  background: #dc3545;
+  border: none;
+  color: #fff;
+  padding: 5px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.delete-btn:hover {
+  background: #c82333;
+}
+--------------------------------------------------------------------------------
+#SCRIPT.JS
+
+// Load tasks from localStorage when page loads
+document.addEventListener("DOMContentLoaded", loadTasks);
+
+document.getElementById("addBtn").addEventListener("click", addTask);
+
+function addTask() {
+  const taskInput = document.getElementById("taskInput");
+  const task = taskInput.value.trim();
+  if (task === "") return;
+
+  const taskList = document.getElementById("taskList");
+  const li = document.createElement("li");
+  li.innerHTML = `${task} <button class="delete-btn" onclick="deleteTask(this)">X</button>`;
+  taskList.appendChild(li);
+
+  saveTask(task);
+  taskInput.value = "";
+}
+
+function deleteTask(button) {
+  const li = button.parentElement;
+  const task = li.firstChild.textContent.trim();
+  li.remove();
+  removeTask(task);
+}
+
+function saveTask(task) {
+  let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+  tasks.push(task);
+  localStorage.setItem("tasks", JSON.stringify(tasks));
+}
+
+function removeTask(task) {
+  let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+  tasks = tasks.filter(t => t !== task);
+  localStorage.setItem("tasks", JSON.stringify(tasks));
+}
+
+function loadTasks() {
+  let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+  const taskList = document.getElementById("taskList");
+  tasks.forEach(task => {
+    const li = document.createElement("li");
+    li.innerHTML = `${task} <button class="delete-btn" onclick="deleteTask(this)">X</button>`;
+    taskList.appendChild(li);
+  });
+}
+-----------------------------------------------
